@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+
+import ast
+import fcntl
+import os
+import sys
+
+from gi.repository import GLib
+from gi.repository import Gio
+from gi.repository import Gst
+
+# init gstreamer, parse args
+args = sys.argv[:]
+Gst.init(args)
+
+desc = ' '.join(args[1:])
+
+# load gstreamer pipeline, press play
+
+pipeline = Gst.parse_launch(desc)
+pipeline.set_state(Gst.State.PLAYING)
+
+def setup_non_blocking_read(f, on_line):
+  fd = f.fileno()
+
+  fl = fcntl.fcntl(fd, fcntl.F_GETFL)
+  fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
+
+  buf = ['']
+  def on_data_available(fd, condition):
+    data = f.read()
+    buf[0] += data
+
+    lines = buf[0].split('\n')
+    buf[0] = lines.pop()
+
+    for line in lines:
+      on_line(line)
+
+    return True
+
+  GLib.io_add_watch(
+    fd,
+    GLib.IOCondition.IN,
+    on_data_available,
+  )
+
+# make stdin non-blocking and handle lines
+
+import re
+
+SET_EXPR = re.compile('^(\w+)\.(\w+) = (.+)$')
+
+def on_line(line):
+  m = SET_EXPR.match(line)
+  if not m:
+    return
+  target, attr, value = m.groups()
+
+  el = pipeline.get_by_name(target)
+  value = ast.literal_eval(value)
+  el.set_property(attr, value)
+
+setup_non_blocking_read(sys.stdin, on_line)
+
+# run glib main loop
+
+loop = GLib.MainLoop()
+loop.run()
+
