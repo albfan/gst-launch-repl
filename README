@@ -1,0 +1,79 @@
+= Disclaimer =
+
+First of all, a warning: if you’ve never used gst-launch before (or gstreamer
+for that matter), you probably won’t find this tool very easy to use.
+On the other hand, if you want to reconfigure and play with your gstreamer
+pipelines via the command line while they’re running, this is the tool for you.
+
+= Installation =
+
+== Debian ==
+
+{{{
+#!sh
+$ sudo aptitude install python-gi gir1.2-gstreamer-1.0
+# (gstreamer-0.10 will probably work as well)
+
+$ virtualenv --system-site-packages .
+# (needs --system-site-packages to see python-gi)
+
+$ . bin/activate
+$ pip install -e hg+http://hg.flowblok.id.au/gst-launch-dynamic
+}}}
+
+= Usage =
+
+{{{
+#!sh
+$ gst-launch-dynamic videotestsrc ! autovideosink
+videotestsrc0.pattern = 1
+}}}
+
+= Commands =
+
+In all the examples below, {{{<element>}}} refers to the name of the element.
+If you haven’t given it a name explicitly, gstreamer assigns names by appending
+a number to the element type (e.g., videotestsrc0).
+
+== Pipeline state ==
+
+{{{
+play
+pause
+stop
+}}}
+
+== Set properties ==
+
+{{{
+<element>.<property> = <value>
+}}}
+
+== Link elements ==
+
+{{{
+<element>.<pad> -> <element>.<pad>
+}}}
+
+You can omit one or both pad names.
+
+== Unlink elements ==
+
+{{{
+<element>.<pad> x> <element>.<pad>
+}}}
+
+== Add element ==
+
+{{{
++ type [key=value ...]
+}}}
+
+Same syntax as gst-launch, with a plus sign at the front.
+
+== Remove element ==
+
+{{{
+- <element>
+}}}
+
