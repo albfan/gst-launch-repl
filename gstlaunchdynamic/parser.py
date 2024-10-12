@@ -11,7 +11,7 @@ class Parser(object):
         self.pipeline = pipeline
 
         self.expressions = [
-            ('^(\w+)\.(\w+) = (.+)$', self.set_property),
+            ('^(\w+)\.([\w-]+) = (.+)$', self.set_property),
             ('^(\w+)(?:\.(\w+))? ([-x])> (\w+)(?:\.(\w+))?$', self.link_pads),
             ('^\+ (\w+)(?: (.*))?$', self.add_element),
             ('^- (\w+)$', self.remove_element),
