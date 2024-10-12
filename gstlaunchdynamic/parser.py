@@ -34,7 +34,7 @@ class Parser(object):
                     traceback.print_exc()
                 break
         else:
-            print 'Error: could not parse line.'
+            print ('Error: could not parse line.')
 
     def set_property(self, target, attr, value):
         el = self.pipeline.get_by_name(target)
@@ -45,17 +45,17 @@ class Parser(object):
         src_el = self.pipeline.get_by_name(src)
         dst_el = self.pipeline.get_by_name(dst)
 
-        print src_el, src_pad, char, dst_el, dst_pad
+        print (src_el, src_pad, char, dst_el, dst_pad)
 
         if char == '-':
             success = src_el.link_pads(src_pad, dst_el, dst_pad)
             if not success:
-                print 'Could not link pads.'
+                print ('Could not link pads.')
 
         elif char == 'x':
             success = src_el.unlink_pads(src_pad, dst_el, dst_pad)
             if not success:
-                print 'Could not unlink pads.'
+                print ('Could not unlink pads.')
 
     def set_state(self, state):
         state = {

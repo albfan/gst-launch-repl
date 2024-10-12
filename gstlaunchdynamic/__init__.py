@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 
 import sys
+import gi
+
+gi.require_version('Gst', '1.0')
 
 from gi.repository import GLib
 from gi.repository import Gst
 
-from parser import Parser
-from reader import setup_non_blocking_read
+from gstlaunchdynamic.parser import Parser
+from gstlaunchdynamic.reader import setup_non_blocking_read
+
+
 
 # init gstreamer, parse args
 args = sys.argv[:]
